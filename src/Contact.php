@@ -1,6 +1,6 @@
 <?php
 
-namespace RapidWeb\GooglePeopleAPI;
+namespace Titeya\GooglePeopleAPI;
 
 class Contact
 {
