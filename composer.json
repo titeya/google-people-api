@@ -1,0 +1,20 @@
+{
+    "name": "titeya/google-people-api",
+    "description": "This package provides a user friendly way of interacting with Google Contacts via the Google People API.",
+    "type": "library",
+    "require": {
+        "titeya/google-oauth-2-handler": "^1.2.1"
+    },
+    "license": "LGPL-3.0-only",
+    "authors": [
+        {
+            "name": "Nicolas Bellamy",
+            "email": "n.bellamy@titeya.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Titeya\\GooglePeopleAPI\\": "./src/"
+        }
+    }
+}
