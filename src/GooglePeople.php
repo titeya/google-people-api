@@ -181,7 +181,16 @@ class GooglePeople
 
     public function me()
     {
-        return $this->getByResourceName('people/me');
+        $url = self::PEOPLE_BASE_URL.'people/me?personFields='.implode(',', self::PERSON_FIELDS);
+
+        $response = $this->googleOAuth2Handler->performRequest('GET', $url);
+        $body = (string) $response->getBody();
+
+        if ($response->getStatusCode()!=200) {
+            throw new Exception($body);
+        }
+
+        return $this->convertResponseConnectionToContact($contact);
     }
 
     public function contactSave(Contact $contact)
