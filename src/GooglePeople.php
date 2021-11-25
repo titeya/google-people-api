@@ -190,6 +190,8 @@ class GooglePeople
             throw new Exception($body);
         }
 
+        $contact = json_decode($body);
+        
         return $this->convertResponseConnectionToContact($contact);
     }
 
