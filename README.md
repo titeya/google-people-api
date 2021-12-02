@@ -74,7 +74,7 @@ $people->groupSave($group);
 
 ```php
 // Delete group
-// $people->groupDelete("contactGroups/c805502054287");
+$people->groupDelete("contactGroups/c805502054287");
 ```
 
 ### Retrieve all contacts
