@@ -47,7 +47,7 @@ $people = new GooglePeople($googleOAuth2Handler);
 
 ```php
 // Retrieval all contacts
-foreach($people->all() as $contact) {
+foreach($people->contactall() as $contact) {
     echo $contact->resourceName.' - ';
     if ($contact->names) {
         echo $contact->names[0]->displayName;
@@ -60,7 +60,7 @@ foreach($people->all() as $contact) {
 
 ```php
 // Retrieve single contact (by resource name)
-$contact = $people->get('people/c8055020007701654287');
+$contact = $people->contactGet('people/c8055020007701654287');
 ```
 
 ### Create a new contact
