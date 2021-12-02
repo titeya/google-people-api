@@ -43,6 +43,40 @@ $people = new GooglePeople($googleOAuth2Handler);
 
 ## Usage
 
+### Retrieve all groups
+
+```php
+// Retrieval all contacts
+foreach($people->groupAll() as $group) {
+    echo $group->resourceName.' - ';
+    echo $group->name;
+    echo PHP_EOL;
+}
+```
+
+### Retrieve a single group
+
+```php
+// Retrieve single contact (by resource name)
+$group = $people->groupGet('contactGroups/c805502054287');
+```
+
+### Create a new group
+
+```php
+// Create new group
+$group = new \stdClass();
+$group->name="new group";
+$people->groupSave($group);
+```
+
+### Delete a group
+
+```php
+// Delete group
+// $people->groupDelete("contactGroups/c805502054287");
+```
+
 ### Retrieve all contacts
 
 ```php
