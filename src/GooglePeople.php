@@ -9,8 +9,8 @@ class GooglePeople
 {
     private $googleOAuth2Handler;
 
-    const PERSON_FIELDS = ['addresses', 'ageRanges', 'biographies', 'birthdays', 'braggingRights', 'coverPhotos', 'emailAddresses', 'events', 'genders', 'imClients', 'interests', 'locales', 'memberships', 'metadata', 'names', 'nicknames', 'occupations', 'organizations', 'phoneNumbers', 'photos', 'relations', 'relationshipInterests', 'relationshipStatuses', 'residences', 'skills', 'taglines', 'urls'];
-    const UPDATE_PERSON_FIELDS = ['addresses', 'biographies', 'birthdays', 'braggingRights', 'emailAddresses', 'events', 'genders', 'imClients', 'interests', 'locales', 'names', 'nicknames', 'occupations', 'organizations', 'phoneNumbers', 'relations', 'residences', 'skills', 'urls'];
+    const PERSON_FIELDS = ['addresses', 'ageRanges', 'biographies', 'birthdays', 'braggingRights', 'coverPhotos', 'emailAddresses', 'events', 'genders', 'imClients', 'interests', 'locales', 'memberships', 'metadata', 'names', 'nicknames', 'occupations', 'organizations', 'phoneNumbers', 'photos', 'relations', 'relationshipInterests', 'relationshipStatuses', 'residences', 'skills', 'taglines', 'urls', 'externalIds'];
+    const UPDATE_PERSON_FIELDS = ['addresses', 'biographies', 'birthdays', 'braggingRights', 'emailAddresses', 'events', 'genders', 'imClients', 'interests', 'locales', 'memberships', 'names', 'nicknames', 'occupations', 'organizations', 'phoneNumbers', 'relations', 'residences', 'skills', 'urls'];
     const PEOPLE_BASE_URL = 'https://people.googleapis.com/v1/';
 
     public function __construct(GoogleOAuth2Handler $googleOAuth2Handler)
@@ -100,7 +100,7 @@ class GooglePeople
         $body = (string) $response->getBody();
 
         if ($response->getStatusCode()!=200) {
-            throw new Exception($body);
+             throw new Exception($body);
         }
 
         return $responseObj = json_decode($body);
@@ -189,13 +189,12 @@ class GooglePeople
         if ($response->getStatusCode()!=200) {
             throw new Exception($body);
         }
-
         $contact = json_decode($body);
-        
+
         return $this->convertResponseConnectionToContact($contact);
     }
 
-    public function contactSave(Contact $contact)
+    public function contactSave($contact)
     {
         $requestObj = new \stdClass();
 
@@ -235,9 +234,45 @@ class GooglePeople
         return $this->convertResponseConnectionToContact($responseObj);
     }
 
-    public function contactdelete(Contact $contact)
+    public function contactsSave($contacts)
     {
-        $url = self::PEOPLE_BASE_URL.$contact->resourceName.':deleteContact';
+        
+        $requestObj = new \stdClass();
+        $requestObj->contacts=array();
+        $requestObj->readMask="clientData,externalIds,photos";
+            // If resource name does not exist, create new contact.
+            $method = 'POST';
+            $url = self::PEOPLE_BASE_URL.'people:batchCreateContacts';
+
+        foreach($contacts as $contact) {
+
+            $contactObj = new \stdClass();
+            $contactObj->contactPerson = new \stdClass();
+            foreach(self::PERSON_FIELDS as $personField) {
+                if (isset($contact->$personField)) {
+                    $contactObj->contactPerson->$personField = $contact->$personField;
+                }
+            }
+            array_push($requestObj->contacts, $contactObj);
+        }
+
+        $requestBody = json_encode($requestObj);
+
+        $response = $this->googleOAuth2Handler->performRequest($method, $url, $requestBody);
+        
+        $body = (string) $response->getBody();
+
+        if ($response->getStatusCode()!=200) {
+            throw new Exception($body);
+        }
+
+        return json_decode($body);
+        
+    }
+
+    public function contactdelete($contact)
+    {
+        $url = self::PEOPLE_BASE_URL.$contact.':deleteContact';
 
         $response = $this->googleOAuth2Handler->performRequest('DELETE', $url);
         $body = (string) $response->getBody();
